@@ -7,6 +7,13 @@ WORKDIR /usr/src/sentry
 ENV PYTHONPATH /usr/src/sentry
 COPY . /usr/src/sentry
 
+# fix https://github.com/getsentry/sentry/issues/17157
+COPY ./sentry/config.yml       /etc/sentry
+COPY ./sentry/sentry.conf.py   /etc/sentry
+
+# 覆盖server.py文件，源文件kafka地址默认本地
+COPY /sentry/cover/server.py /usr/local/lib/python2.7/site-packages/sentry/conf
+
 # Hook for installing additional plugins
 RUN if [ -s requirements.txt ]; then pip install -r requirements.txt; fi
 
